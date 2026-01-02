@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const Api = axios.create({
-  baseURL: "https://crmbackend-xpxb.onrender.com/api",
+  baseURL: "https://crm-backend-ng24.onrender.com/api",
   withCredentials: true,
 });
 
@@ -59,7 +59,7 @@ Api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await axios.post("https://crmbackend-xpxb.onrender.com/api/refresh",
+        await axios.post("https://crm-backend-ng24.onrender.com/api/refresh",
           {},
           { withCredentials: true }
         );
