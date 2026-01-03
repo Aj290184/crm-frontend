@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+
 import bgImage from "../assets/89124.jpg";
 import { callApi } from "../Services/Api";
+import { AuthContext } from "../Context/AuthContext";
 
 export default function LoginForm() {
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
+
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
@@ -30,11 +34,15 @@ export default function LoginForm() {
     const password = form.password || "";
 
     if (!email || !password) {
-      Toast.fire({ icon: "warning", title: "Please enter email and password" });
+      Toast.fire({
+        icon: "warning",
+        title: "Please enter email and password",
+      });
       return;
     }
 
     setLoading(true);
+
     try {
       const res = await callApi("/login", "POST", { email, password });
       const { message, data } = res || {};
@@ -44,24 +52,39 @@ export default function LoginForm() {
         icon: "success",
         title:
           message ||
-          (payload.isVarified ? "Logged in successfully" : "OTP sent to your email"),
+          (payload.isVarified
+            ? "Logged in successfully"
+            : "OTP sent to your email"),
       });
-
+      
       if (payload.isVarified) {
-        if (payload.token) localStorage.setItem("accessToken", payload.token);
-        if (payload.user) localStorage.setItem("user", JSON.stringify(payload.user));
+        if (payload.token) {
+          localStorage.setItem("accessToken", payload.token);
+        }
+
+        if (payload.user) {
+          localStorage.setItem("user", JSON.stringify(payload.user));
+          setUser(payload.user);
+        }
 
         setForm({ email: "", password: "" });
         navigate("/dashboard");
-      } else {
+      }
+      else {
         const finalEmail = payload.email || email;
         localStorage.setItem("loginEmail", finalEmail);
+
         setForm({ email: "", password: "" });
         navigate("/otp", { state: { email: finalEmail } });
       }
     } catch (err) {
       const backend = err?.response?.data;
-      const msg = backend?.message || backend?.error || err?.message || "Login failed. Please try again.";
+      const msg =
+        backend?.message ||
+        backend?.error ||
+        err?.message ||
+        "Login failed. Please try again.";
+
       Toast.fire({ icon: "error", title: msg });
       console.error("Login error:", err);
     } finally {
@@ -72,7 +95,8 @@ export default function LoginForm() {
   return (
     <div
       className="w-full min-h-screen flex items-center justify-center p-6 bg-cover bg-center"
-      style={{ backgroundImage: `url(${bgImage})` }}>
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       <div className="w-full max-w-6xl rounded-[30px] flex flex-col md:flex-row gap-6 md:max-h-[90vh] overflow-hidden">
         <div className="w-full md:w-1/2 flex items-center justify-center">
           <div className="w-full max-w-md rounded-[22px] p-5 md:p-10 backdrop-blur">
@@ -87,17 +111,19 @@ export default function LoginForm() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4" aria-label="login-form">
-              <div>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="hello@yourmail.com"
-                  value={form.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-900 rounded-full focus:outline-none focus:border-cyan-300 text-sm"
-                  aria-label="email"/>
-              </div>
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4"
+              aria-label="login-form"
+            >
+              <input
+                type="email"
+                name="email"
+                placeholder="hello@yourmail.com"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-900 rounded-full focus:outline-none focus:border-cyan-300 text-sm"
+              />
 
               <div className="relative">
                 <input
@@ -107,13 +133,13 @@ export default function LoginForm() {
                   value={form.password}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-900 rounded-full focus:outline-none focus:border-cyan-300 text-sm pr-16"
-                  aria-label="password"/>
+                />
 
                 <button
                   type="button"
                   onClick={() => setShowPwd((p) => !p)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-600"
-                  aria-label="toggle-password-visibility">
+                >
                   {showPwd ? "Hide" : "Show"}
                 </button>
               </div>
@@ -121,7 +147,7 @@ export default function LoginForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-cyan-600 text-white rounded-full text-lg font-medium disabled:opacity-70 disabled:cursor-not-allowed">
+                className="w-full py-3 bg-cyan-600 text-white rounded-full text-lg font-medium disabled:opacity-70">
                 {loading ? "Logging in..." : "Login"}
               </button>
             </form>

@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+
 import bgImage from "../assets/89124.jpg";
 import { callApi } from "../Services/Api";
+import { AuthContext } from "../Context/AuthContext";
 
 export default function OtpVerify() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
 
-  const email = location?.state?.email || localStorage.getItem("loginEmail");
+  const email =
+    location?.state?.email || localStorage.getItem("loginEmail");
 
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,11 +24,14 @@ export default function OtpVerify() {
     }
   }, [email, navigate]);
 
-  //Submit OTP
+  // Submit OTP
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!otp) return toast.error("Please enter OTP");
+    if (!otp) {
+      toast.error("Please enter OTP");
+      return;
+    }
 
     setLoading(true);
 
@@ -34,13 +41,19 @@ export default function OtpVerify() {
       const { message, data } = res || {};
       const { token, user } = data || {};
 
-      toast.success(message || "OTP verified");
+      toast.success(message || "OTP verified successfully");
 
-      // Save auth info
-      if (token) localStorage.setItem("accessToken", token);
-      if (user) localStorage.setItem("user", JSON.stringify(user));
+      // Save auth info (IMPORTANT)
+      if (token) {
+        localStorage.setItem("accessToken", token);
+      }
 
-      // Remove temporary stored email
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+        setUser(user);
+      }
+
+      // Clear temp email
       localStorage.removeItem("loginEmail");
 
       navigate("/dashboard");
@@ -55,6 +68,7 @@ export default function OtpVerify() {
       setLoading(false);
     }
   };
+
   const handleChangeAccount = () => {
     localStorage.removeItem("loginEmail");
     navigate("/");
@@ -63,11 +77,11 @@ export default function OtpVerify() {
   return (
     <div
       className="w-full min-h-screen flex items-center justify-center p-6 bg-cover bg-center"
-      style={{ backgroundImage: `url(${bgImage})` }}>
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       <div className="w-full max-w-6xl rounded-[30px] flex flex-col md:flex-row gap-6 md:max-h-[90vh] overflow-hidden">
         <div className="w-full md:w-1/2 flex items-center justify-center mx-auto">
           <div className="w-full max-w-md rounded-[22px] p-5 md:p-10 backdrop-blur">
-            
             <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight mb-4">
               OTP Verification
             </h1>
@@ -83,12 +97,14 @@ export default function OtpVerify() {
                 placeholder="Enter OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-900 rounded-full focus:outline-none focus:border-cyan-300 text-sm"/>
+                className="w-full px-4 py-3 border border-gray-900 rounded-full focus:outline-none focus:border-cyan-300 text-sm"
+              />
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-cyan-600 text-white rounded-full text-lg font-medium disabled:opacity-70">
+                className="w-full py-3 bg-cyan-600 text-white rounded-full text-lg font-medium disabled:opacity-70"
+              >
                 {loading ? "Verifying..." : "Verify OTP"}
               </button>
 
@@ -99,7 +115,6 @@ export default function OtpVerify() {
                 Change email / password
               </button>
             </form>
-
           </div>
         </div>
       </div>
