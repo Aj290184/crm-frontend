@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const Api = axios.create({
-  baseURL: "https://crm-backend-ng24.onrender.com/api",
+  baseURL: "https://crm-backend-06cu.onrender.com/api",
   withCredentials: true,
 });
 
@@ -59,7 +59,7 @@ Api.interceptors.response.use(
 
       try {
         const refreshRes = await axios.post(
-          "http://crm-backend-env.eba-rmzwb2zq.ap-south-1.elasticbeanstalk.com/api/refresh",
+          "https://crm-backend-06cu.onrender.com/refresh",
           {},
           { withCredentials: true }
         );

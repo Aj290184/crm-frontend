@@ -95,7 +95,7 @@ export default function Sidebar() {
 
           <div className="flex flex-col leading-tight">
             <span className="text-xs text-gray-500 font-medium">
-              PROCODE BH
+              PROCODE CRM
             </span>
             <span className="text-sm font-semibold text-gray-900 capitalize">
               {displayRole}

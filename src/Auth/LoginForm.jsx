@@ -103,7 +103,7 @@ export default function LoginForm() {
             <div className="mb-6">
               <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight">
                 Welcome to <br />
-                <span className="block">PROCODE BH</span>
+                <span className="block">PROCODE CRM</span>
               </h1>
 
               <p className="text-sm md:text-base text-gray-600 mt-4">
