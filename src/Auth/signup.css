@@ -1,0 +1,47 @@
+.floating-ball {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: float 6s ease-in-out infinite;
+}
+
+.ball1 {
+  width: 120px;
+  height: 120px;
+  background: #06b6d4;
+  top: 20%;
+  left: 20%;
+}
+
+.ball2 {
+  width: 80px;
+  height: 80px;
+  background: #14b8a6;
+  bottom: 20%;
+  right: 25%;
+  animation-delay: 1s;
+}
+
+.ball3 {
+  width: 60px;
+  height: 60px;
+  background: #0ea5e9;
+  top: 60%;
+  left: 50%;
+  animation-delay: 2s;
+}
+
+.ball4 {
+  width: 150px;
+  height: 150px;
+  background: #67e8f9;
+  bottom: 10%;
+  left: 10%;
+  animation-delay: 3s;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-25px); }
+  100% { transform: translateY(0px); }
+}
