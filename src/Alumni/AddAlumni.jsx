@@ -73,8 +73,6 @@ function AddAlumni() {
           <main className="flex-1 px-10 py-10 flex items-center">
 
             <div className="w-full max-w-7xl mx-auto flex items-center justify-between">
-
-              {/* LEFT FORM */}
               <div className="w-full max-w-xl rounded-2xl p-8 z-10">
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">
